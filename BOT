@@ -4,6 +4,7 @@ from discord.ext import commands
 import random
 import requests
 import certifi
+import time
 
 description = '''An example bot to showcase the discord.ext.commands extension
 module.
@@ -14,13 +15,15 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+bot = commands.Bot(command_prefix='L', description=description, intents=intents)
 
 @bot.command()
 async def repeat(ctx, times: int, content='BEN LİBERALİST BİR BOTUM'):
     """Repeats a message multiple times."""
     for i in range(times):
         await ctx.send(content)
+        time.sleep(1)
+
 
 @bot.command()
 async def memrandom(ctx):
@@ -28,6 +31,7 @@ async def memrandom(ctx):
     with open(f'images/{img_name}', 'rb') as f:
         picture = discord.File(f)
     await ctx.send(file=picture)
+
 
 def get_duck_image_url():    
     url = 'https://random-d.uk/api/random'
@@ -41,6 +45,7 @@ async def duck(ctx):
     image_url = get_duck_image_url()
     await ctx.send(image_url)
 
+
 def get_dog_image_url():    
     url = 'https://random.dog/woof.json'
     res = requests.get(url)
@@ -53,4 +58,30 @@ async def dog(ctx):
     await ctx.send(image_url)
 
 
-bot.run('Token Giriniz')
+@bot.command('cevrebilgi')
+async def randombilgi(ctx):
+    cevaplar = [
+        'Kirlettiğimiz ozon tabakası 5-10 km arası bir kalınlıktadır.',
+        'Mavi geri dönüşüm kutusunun içerisine kaüıt, cam, metal ve plastikler atılmalıdır.',
+        'Yeşil geri döüşüm kutusunun içerisine organik atıklar atılabilir.',
+        'Sarı geri dönüşüm kutusunun içersinie dönüştürülemeyen ev atıkları atılmalıdır.',
+        "Dünya'nın ortalama 1,75 milyar yıllık bir ömrü kaldı."
+    ]
+    cevap = random.choice(cevaplar)
+    await ctx.send(cevap)
+
+
+soru_ve_cevap = {
+    'Merhaba.': 'Merhaba.',
+    'Nasılsın?': 'İyiyim, ya sen?',
+    'Ben de iyiyim?': 'Hep iyi ol.',
+    'Sen kimsin?': 'Ben senin sorularına cevap vermek için oluşturuldum.',
+    'Adın ne?': 'Benim adım Liberalist BOT.'
+}
+
+@bot.command('soru')
+async def soru_cevap_cıktı(ctx, *, soru: str):
+    cevap = soru_ve_cevap.get(soru, 'Ne dediğini anlamadım.')
+    await ctx.send(cevap)
+
+bot.run("Token Giriniz")
